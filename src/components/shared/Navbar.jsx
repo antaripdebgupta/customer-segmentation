@@ -2,7 +2,9 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
 import ToggleTheme from '../ToggleTheme';
+import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
 
 export default function Navbar() {
@@ -37,9 +39,16 @@ export default function Navbar() {
           </Link>
 
           <div className="hidden items-center gap-4 md:flex">
-            <button className="rounded-md border border-gray-300 px-4 py-2 text-gray-800 transition hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-800">
-              Sign In
-            </button>
+            <SignedOut>
+              <Link href="/sign-in">
+                <Button className="rounded-md border border-gray-300 px-4 py-2 text-gray-800 transition hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-800">
+                  Sign In
+                </Button>
+              </Link>
+            </SignedOut>
+            <SignedIn>
+              <UserButton afterSignOutUrl="/" />
+            </SignedIn>
             <ToggleTheme aria-label="Toggle dark/light mode" />
           </div>
 
@@ -69,9 +78,16 @@ export default function Navbar() {
         </div>
 
         <div className="flex flex-col gap-4 p-4">
-          <button className="rounded-md border border-gray-300 px-4 py-2 text-gray-800 transition hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-800">
-            Sign In
-          </button>
+          <SignedOut>
+            <Link href="/sign-in">
+              <Button className="w-full" variant="outline">
+                Log In
+              </Button>
+            </Link>
+          </SignedOut>
+          <SignedIn>
+            <UserButton afterSignOutUrl="/" />
+          </SignedIn>
           <ToggleTheme aria-label="Toggle dark/light mode" />
         </div>
       </div>
