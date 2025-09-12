@@ -6,6 +6,7 @@ import { Upload } from 'lucide-react';
 import Loading from '@/components/Loading';
 import { Button } from '@/components/ui/button';
 import useFileUpload from '@/hooks/useFileUpload';
+import CSVPreview from '@/components/CSVPreview';
 
 const CSVUpload = () => {
   const { isLoaded, isSignedIn, user } = useUser();
@@ -21,6 +22,7 @@ const CSVUpload = () => {
   } = useFileUpload();
 
   const [dragActive, setDragActive] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const handleDrag = (e) => {
     e.preventDefault();
@@ -49,7 +51,7 @@ const CSVUpload = () => {
   if (!isLoaded) return <div className="flex justify-center p-4">Loading...</div>;
 
   return (
-    <div className="mx-auto mt-20 max-w-2xl rounded-xl p-6 dark:bg-gray-900 dark:text-gray-100">
+    <div className="mx-auto mt-20 max-w-6xl rounded-xl p-6 dark:bg-gray-900 dark:text-gray-100">
       <div className="mb-6">
         <h2 className="mb-2 text-2xl font-bold">Upload CSV Files</h2>
         <p className="text-gray-600 dark:text-gray-400">
@@ -58,7 +60,11 @@ const CSVUpload = () => {
       </div>
 
       <div
-        className={`rounded-lg border-2 border-dashed p-8 text-center transition-colors ${dragActive ? 'border-blue-400 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-300 hover:border-gray-400 dark:border-gray-700 dark:hover:border-gray-500'} ${uploading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'} `}
+        className={`rounded-lg border-2 border-dashed p-8 text-center transition-colors ${
+          dragActive
+            ? 'border-blue-400 bg-blue-50 dark:bg-blue-900/20'
+            : 'border-gray-300 hover:border-gray-400 dark:border-gray-700 dark:hover:border-gray-500'
+        } ${uploading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
         onDragEnter={handleDrag}
         onDragLeave={handleDrag}
         onDragOver={handleDrag}
@@ -97,7 +103,7 @@ const CSVUpload = () => {
 
       {loading && <Loading text="Loading uploaded files..." />}
       {!loading && uploadedFiles.length > 0 && (
-        <div className="mt-8">
+        <div className="mb-6 mt-8">
           <div className="mb-4 flex items-center justify-between">
             <h3 className="text-lg font-semibold">Uploaded Files ({uploadedFiles.length})</h3>
             <button
@@ -129,15 +135,27 @@ const CSVUpload = () => {
                   </div>
                 </div>
                 <div>
-                  <Button className="bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800">
+                  <Button
+                    className="bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+                    onClick={() =>
+                      setSelectedFile({
+                        ...file,
+                        fileId: file.fileId || file.$id,
+                      })
+                    }
+                  >
                     View
                   </Button>
+
                   <Button
                     className="ml-2 bg-red-600 text-white hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
                     disabled={deletingFileId === file.fileId || deletingFileId === file.$id}
-                    onClick={() =>
-                      deleteFile(file.fileId || file.$id, file.originalName || file.fileName)
-                    }
+                    onClick={() => {
+                      if (selectedFile?.fileId === (file.fileId || file.$id)) {
+                        setSelectedFile(null);
+                      }
+                      deleteFile(file.fileId || file.$id, file.originalName || file.fileName);
+                    }}
                   >
                     {deletingFileId === (file.fileId || file.$id) ? 'Deleting...' : 'Delete'}
                   </Button>
@@ -153,6 +171,8 @@ const CSVUpload = () => {
           No files uploaded yet. Upload your first CSV file to get started!
         </p>
       )}
+
+      {selectedFile && <CSVPreview file={selectedFile} onClose={() => setSelectedFile(null)} />}
     </div>
   );
 };
