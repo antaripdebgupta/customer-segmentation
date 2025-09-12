@@ -211,3 +211,92 @@ export async function GET(request) {
     );
   }
 }
+
+export async function DELETE(request) {
+  try {
+    const { userId } = getAuth(request);
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { searchParams } = new URL(request.url);
+    const fileId = searchParams.get('id');
+    if (!fileId) {
+      return NextResponse.json({ error: 'Missing fileId' }, { status: 400 });
+    }
+
+    //console.log(`Attempting to delete file: ${fileId}`);
+
+    const documents = await retryOperation(
+      async () => {
+        return await databases.listDocuments(
+          process.env.APPWRITE_DATABASE_ID,
+          process.env.APPWRITE_COLLECTION_ID,
+          [Query.equal('fileId', fileId), Query.equal('userId', userId)]
+        );
+      },
+      2,
+      1000
+    );
+
+    if (!documents.total) {
+      return NextResponse.json({ error: 'File not found' }, { status: 404 });
+    }
+
+    const document = documents.documents[0];
+
+    await retryOperation(
+      async () => {
+        return await storage.deleteFile(process.env.APPWRITE_BUCKET_ID, fileId);
+      },
+      3,
+      2000
+    );
+
+    await retryOperation(
+      async () => {
+        return await databases.deleteDocument(
+          process.env.APPWRITE_DATABASE_ID,
+          process.env.APPWRITE_COLLECTION_ID,
+          document.$id
+        );
+      },
+      2,
+      1000
+    );
+
+    // console.log(`File and document deleted successfully: ${fileId}`);
+
+    return NextResponse.json({
+      success: true,
+      message: 'File deleted successfully',
+      deletedFileId: fileId,
+    });
+  } catch (error) {
+    console.error('Delete error details:', {
+      message: error.message,
+      code: error.code,
+      type: error.type,
+      response: error.response,
+    });
+
+    if (error.code === 404) {
+      return NextResponse.json({ error: 'File not found' }, { status: 404 });
+    }
+
+    if (error.code === 503) {
+      return NextResponse.json(
+        { error: 'Service temporarily unavailable. Please try again later.' },
+        { status: 503 }
+      );
+    }
+
+    return NextResponse.json(
+      {
+        error: 'Failed to delete file. Please try again later.',
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined,
+      },
+      { status: 500 }
+    );
+  }
+}
