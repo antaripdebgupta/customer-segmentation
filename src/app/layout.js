@@ -2,6 +2,7 @@ import { ClerkProvider } from '@clerk/nextjs';
 import Navbar from '@/components/shared/Navbar';
 import Footer from '@/components/shared/Footer';
 import '../styles/globals.css';
+import { Toaster } from 'sonner';
 
 export const metadata = {
   title: 'ClusterCart',
@@ -17,6 +18,7 @@ export default function RootLayout({ children }) {
           <Navbar />
           <main>{children}</main>
           <Footer />
+          <Toaster position="top-center" richColors closeButton />
         </ClerkProvider>
       </body>
     </html>

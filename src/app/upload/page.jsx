@@ -117,7 +117,7 @@ const CSVUpload = () => {
                 <div className="flex items-center space-x-3">
                   <span className="text-green-500">✓</span>
                   <div>
-                    <p className="font-medium">
+                    <p className="max-w-[25rem] font-medium">
                       {file.originalName || file.fileName || `File ${index + 1}`}
                     </p>
                     <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -135,7 +135,9 @@ const CSVUpload = () => {
                   <Button
                     className="ml-2 bg-red-600 text-white hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
                     disabled={deletingFileId === file.fileId || deletingFileId === file.$id}
-                    onClick={() => deleteFile(file.fileId || file.$id)}
+                    onClick={() =>
+                      deleteFile(file.fileId || file.$id, file.originalName || file.fileName)
+                    }
                   >
                     {deletingFileId === (file.fileId || file.$id) ? 'Deleting...' : 'Delete'}
                   </Button>
