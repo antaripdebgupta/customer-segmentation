@@ -118,12 +118,13 @@ const CSVUpload = () => {
             {uploadedFiles.map((file, index) => (
               <div
                 key={file.fileId || file.$id || index}
-                className="flex items-center justify-between rounded-lg bg-gray-50 p-3 dark:bg-gray-800"
+                className="flex flex-col rounded-lg bg-gray-50 p-3 dark:bg-gray-800 sm:flex-row sm:items-center sm:justify-between"
               >
-                <div className="flex items-center space-x-3">
-                  <span className="text-green-500">✓</span>
-                  <div>
-                    <p className="max-w-[25rem] font-medium">
+                {/* File Info */}
+                <div className="flex items-start space-x-3 sm:items-center">
+                  <span className="text-lg text-green-500 sm:text-base">✓</span>
+                  <div className="flex flex-col">
+                    <p className="max-w-[20rem] break-words font-medium sm:max-w-[25rem]">
                       {file.originalName || file.fileName || `File ${index + 1}`}
                     </p>
                     <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -134,9 +135,10 @@ const CSVUpload = () => {
                     </p>
                   </div>
                 </div>
-                <div>
+
+                <div className="mt-2 flex flex-col space-y-2 sm:mt-0 sm:flex-row sm:space-x-2 sm:space-y-0">
                   <Button
-                    className="bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+                    className="w-full bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 sm:w-auto"
                     onClick={() =>
                       setSelectedFile({
                         ...file,
@@ -148,7 +150,7 @@ const CSVUpload = () => {
                   </Button>
 
                   <Button
-                    className="ml-2 bg-red-600 text-white hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
+                    className="w-full bg-red-600 text-white hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800 sm:w-auto"
                     disabled={deletingFileId === file.fileId || deletingFileId === file.$id}
                     onClick={() => {
                       if (selectedFile?.fileId === (file.fileId || file.$id)) {
