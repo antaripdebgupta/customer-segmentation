@@ -8,6 +8,15 @@ const ToggleTheme = ({ onClick }) => {
   const storedTheme = typeof window !== 'undefined' ? localStorage.getItem('theme') : 'light';
   const initialDarkMode = storedTheme === 'dark';
   const [darkMode, setDarkMode] = useState(initialDarkMode);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.matchMedia('(max-width: 768px)').matches);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     if (darkMode) {
@@ -42,42 +51,53 @@ const ToggleTheme = ({ onClick }) => {
   };
 
   return (
-    <motion.button
+    <button
       onClick={toggleTheme}
       className="px-2 text-xl outline-2 focus:outline-blue-600"
       aria-label="toggle theme"
-      variants={iconVariants}
-      initial="initial"
-      whileHover="hover"
-      whileTap="tap"
-      transition={{ type: 'spring', stiffness: 400, damping: 15 }}
     >
-      <AnimatePresence mode="wait">
-        {darkMode ? (
-          <motion.span
-            key="light"
-            variants={themeSwitchVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{ duration: 0.2 }}
-          >
-            <Sun className="text-yellow-500" />
-          </motion.span>
+      {isMobile ? (
+        darkMode ? (
+          <Sun className="text-yellow-500" />
         ) : (
-          <motion.span
-            key="dark"
-            variants={themeSwitchVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{ duration: 0.2 }}
-          >
-            <Moon className="text-blue-400" />
-          </motion.span>
-        )}
-      </AnimatePresence>
-    </motion.button>
+          <Moon className="text-blue-400" />
+        )
+      ) : (
+        <motion.div
+          variants={iconVariants}
+          initial="initial"
+          whileHover="hover"
+          whileTap="tap"
+          transition={{ type: 'spring', stiffness: 400, damping: 15 }}
+        >
+          <AnimatePresence mode="wait">
+            {darkMode ? (
+              <motion.span
+                key="light"
+                variants={themeSwitchVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{ duration: 0.2 }}
+              >
+                <Sun className="text-yellow-500" />
+              </motion.span>
+            ) : (
+              <motion.span
+                key="dark"
+                variants={themeSwitchVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{ duration: 0.2 }}
+              >
+                <Moon className="text-blue-400" />
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      )}
+    </button>
   );
 };
 
