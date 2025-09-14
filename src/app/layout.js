@@ -13,7 +13,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="custom-scrollbar dark:bg-dark-900 dark:text-white">
+      <body className="custom-scrollbar bg-white text-gray-800 dark:bg-dark-900 dark:text-white">
         <ClerkProvider>
           <Navbar />
           <main>{children}</main>

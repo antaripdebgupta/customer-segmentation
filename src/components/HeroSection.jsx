@@ -32,7 +32,7 @@ const features = [
 
 export default function Hero() {
   return (
-    <section className="relative mt-20 flex min-h-screen w-full flex-col items-center justify-center px-6 text-center dark:bg-dark-900 dark:text-white sm:mt-0 sm:px-6">
+    <section className="relative mt-20 flex min-h-screen w-full flex-col items-center justify-center bg-white px-6 text-center text-gray-800 dark:bg-dark-900 dark:text-white sm:mt-0 sm:px-6">
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
@@ -64,7 +64,7 @@ export default function Hero() {
             <Button
               variant="outline"
               size="lg"
-              className="w-full rounded-lg px-6 py-3 text-base transition-all duration-300 hover:scale-105 hover:shadow-lg dark:bg-gray-900 sm:text-lg"
+              className="w-full rounded-lg px-6 py-3 text-base text-gray-700 transition-all duration-300 hover:scale-105 hover:shadow-lg dark:bg-gray-900 dark:text-white sm:text-lg"
             >
               <BarChart3 className="mr-2 h-5 w-5" />
               Explore Segments

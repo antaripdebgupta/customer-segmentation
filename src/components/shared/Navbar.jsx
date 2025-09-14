@@ -14,7 +14,6 @@ export default function Navbar() {
   const pathname = usePathname();
 
   const navLinks = [
-    { href: '/upload', label: 'Upload' },
     { href: '/clusters', label: 'Clusters' },
     { href: '/dashboard', label: 'Dashboard' },
     { href: '/insights', label: 'Insights' },
@@ -122,8 +121,11 @@ export default function Navbar() {
           </SignedIn>
           <SignedOut>
             <Link href="/sign-in">
-              <Button className="w-full" variant="outline">
-                Log In
+              <Button
+                className="w-full text-gray-700 dark:bg-slate-700 dark:text-white"
+                variant="outline"
+              >
+                Sign In
               </Button>
             </Link>
           </SignedOut>
